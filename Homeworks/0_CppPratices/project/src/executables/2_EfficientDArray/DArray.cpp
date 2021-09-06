@@ -110,9 +110,8 @@ void DArray::PushBack(double dValue) {
 	}
 	else {
 		double* array = new double [2 * m_nSize + 2];
-		for (int i = 0; i < m_nSize; i++) {
-			array[i] = m_pData[i];
-		}
+
+		memcpy(array, m_pData, sizeof(double) * m_nSize);
 		array[m_nSize] = dValue;
 
 		m_nSize++;
@@ -144,13 +143,10 @@ void DArray::InsertAt(int nIndex, double dValue) {
 	}
 	else {
 		double* array = new double [2 * m_nSize + 2];
-		for (int i = 0; i < nIndex; i++) {
-			array[i] = m_pData[i];
-		}
+
+		memcpy(array, m_pData, sizeof(double) * nIndex);
 		array[nIndex] = dValue;
-		for (int i = nIndex; i < m_nSize; i++) {
-			array[i+1] = m_pData[i];
-		}
+		memcpy(array + nIndex + 1, m_pData + nIndex, sizeof(double) * (m_nSize - nIndex + 1));
 
 		m_nSize++;
 		m_nMax = m_nSize * 2;
@@ -173,8 +169,6 @@ DArray& DArray::operator = (const DArray& arr) {
 
 	m_nSize = arr.m_nSize;
 	m_nMax = arr.m_nMax;
-	for (int i = 0; i < m_nSize; i++) {
-		m_pData[i] = arr.m_pData[i];
-	}
+	memcpy(m_pData, arr.m_pData, sizeof(double) * m_nSize);
 	return *this;
 }
